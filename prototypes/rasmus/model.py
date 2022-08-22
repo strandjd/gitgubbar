@@ -12,7 +12,7 @@ BASE_SIZE = 224
 def load_category(category):
     cnt = 0
 
-    dir = 'emotions/' + category
+    dir = '../emotions/' + category
 
     for img in os.listdir(dir):
         try:
