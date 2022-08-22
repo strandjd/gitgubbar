@@ -1,6 +1,4 @@
-from genericpath import isdir
-import cv2
-import glob, os
+import cv2, os
 
 def save_faces(pathin, dirout):
 
@@ -24,6 +22,7 @@ def save_faces(pathin, dirout):
     return len(faces)
 
 if __name__=='__main__':
+    import glob
     
     if not os.path.isdir('res'):
         os.mkdir('res')
@@ -31,5 +30,4 @@ if __name__=='__main__':
     for f in glob.glob('res/*'):
         os.remove(f)
 
-    # print(save_faces('test.png', 'res'))
     print(save_faces('human.jpg', 'res'))
