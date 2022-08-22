@@ -6,10 +6,14 @@ from sklearn.neighbors import KNeighborsClassifier
 
 BASE_SIZE = 224
 
+DATASET_DIR = os.path.join(
+    os.path.abspath(os.path.join(os.path.dirname(__file__),"..")), 'emotions')
+
+
 def load_category(category):
     cnt = 0
 
-    dir = '../emotions/' + category
+    dir = os.path.join(DATASET_DIR, category)
 
     for img in os.listdir(dir):
         try:
