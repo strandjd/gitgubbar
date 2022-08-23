@@ -1,27 +1,5 @@
 from model import EmotionDetector, get_all_estimator_names
 import os, sys
-import sklearn
-import importlib
-
-# i = importlib.import_module("pandas")
-# print(i)
-
-# all = sklearn.utils.all_estimators()
-
-
-# print(all)
-
-# Att ta upp på kortmötet: 
-# 1. datasetvalidering(Är det ansikten enbart). Om fer funkar, är det rätt label. 
-# 2. Min tidigare modell är felaktig. Jag har passat in alla bilder istället för enbart testbilder. 
-# Därför den gav så bra resultat. 
-
-# def func(**kwargs):
-#     print(kwargs)
-
-# def test(kwargs):
-#     print(kwargs)
-    # func(**kwargs)
 
 DATASET_DIR = os.path.join(
     os.path.abspath(os.path.join(os.path.dirname(__file__),"..")), 'emotions')
@@ -33,14 +11,24 @@ def example():
 
     print(f"loaded {model.load_category('happiness', get_dir('happiness'))} images")
     print(f"loaded {model.load_category('sadness', get_dir('sadness'))} images")
-    print(f"loaded {model.load_category('neutrality', get_dir('neutrality'))} images")
+    # print(f"loaded {model.load_category('neutrality', get_dir('neutrality'))} images")
 
-    model.fit_train_test(kwargs={'shuffle':True})
+    model.fit_train_test(test_size=0.5, kwargs={'shuffle':True})
     res = model.predict_test_data()
 
     print(res['percentage'])
 
+    for emotion in set(model.y):
+        # pred = len([True for x in res['predictions'] if x == emotion])
+        #   = len([True for x in res['expected'] if x == emotion])
+        correct = len([True for i, j in zip(res['predictions'], res['expected']) if i == j and i == emotion])
+        missed = len([True for i, j in zip(res['predictions'], res['expected']) if i != j and j == emotion])
 
+        print(f'{emotion} - total occurences: {correct+missed} correct guesses: {correct}, wrong guesses: {missed}')
+
+
+
+#this needs work
 def try_all_classifiers():
 
     print(get_all_estimator_names(type='classifier'))
