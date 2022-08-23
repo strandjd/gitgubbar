@@ -1,49 +1,159 @@
 from PIL import Image
-import os
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
+import os, sklearn
 
-# storleken som bilderna ska omvandlas till i pixlar (både längd och bredd) 
-BASE_SIZE = 224
 
-# dir där datasettet ligger 
-DATASET_DIR = os.path.join(
-    os.path.abspath(os.path.join(os.path.dirname(__file__),"..")), 'emotions')
+DEFAULT_IMAGE_SIZE = 224
+DEFAULT_TEST_SIZE = 0.25
 
+def get_all_estimator_names(type:str=None):
+    """valid types:
+        'classifier', 'regressor', 'cluster', 'transformer' or None"""
+
+    if type != None:
+        if type not in ['classifier', 'regressor', 'cluster', 'transformer']:
+            raise Exception(f'Invalid type: {type}')
+
+    return [x[0] for x in sklearn.utils.all_estimators(type_filter=type)]
+
+class EmotionDetector():
+    
+    def __init__(self, image_size=DEFAULT_IMAGE_SIZE):
+        self.X = []
+        self.y = []
+        self.image_size = DEFAULT_IMAGE_SIZE
+        self.estimator = None
+
+    # shuffle=True good kwargs
+    def fit_train_test(self, test_size=DEFAULT_TEST_SIZE, kwargs:dict={}):
+        #behöver vi spara alla dessta xy i objektet??
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
+            self.X, self.y, test_size=test_size, **kwargs)
+        
+        self.estimator.fit(self.X_train, self.y_train)
+
+    def fit_all(self):
+        self.estimator.fit(self.X, self.y)
+
+    def predict_test_data(self):
+        """returns a dictionary with three keys: predictions, expected, percentage"""
+        res = {
+            'predictions': self.estimator.predict(self.X_test),
+            'expected'   : self.y_test
+        }
+
+        correct = len([True for i,j in zip(res['predictions'], res['expected']) if i == j])
+        res['percentage'] = ( round(correct / len(res['expected']), 2) ) * 100
+        return res
+
+
+    # these need to be preprocessed
+    def predict(self, X, y):
+        raise Exception('TODO')
+        # """returns a dictionary with three keys: predictions, expected, percentage"""
+        # res = {
+        #     'predictions': self.estimator.predict(self.X),
+        #     'expected'   : self.y
+        # }
+        # res['percentage'] = (round(res['predictions'] / res['expected'])) * 100
+        # return res
+        # return self.estimator.predict(X)
+
+  
+    # print('fitting')
+    # clf.fit(X, y)
+    
+
+    def set_estimator(self, name:str, kwargs:dict={}) -> bool:
+        """Sets estimator with name <name>. 
+        <kwargs> = dict with keyword arguments for selected estimator.
+        Estimator names can be found by calling <get_all_estimator_names>"""
+        if not name in get_all_estimator_names():
+            return False
+
+        #hittar biblioteksnamnet på önskad estimator
+        libname = [x[1] for x in sklearn.utils.all_estimators() if x[0] == name][0]
+
+        #fult men funkar
+        libname = str(libname).split("'")[1]
+        # detta också lite halvfult. Men funkar på alla estimatorer
+        libsplit = libname.split('.')
+        fromlib = '.'.join(libsplit[:2])
+        class_name = libsplit[-1]
+   
+        #importerar estimatoren
+        module = __import__(fromlib, globals(), locals(), [class_name], 0)
+        # hämtar estimatorklassen
+        est_class = getattr(module, class_name)
+        #skapar estimators med angivna kwargs
+        self.estimator = est_class(**kwargs)
+
+        return True
+
+    
+
+    def load_category(self, label:str, dir:str) -> int:
+        """loads all images in directory <dir> as label <label>.
+        returns amount of loaded images as int."""
+
+        if not os.path.isdir(dir):
+            raise Exception(f'directory: {dir} not found')
+        
+        len_before = len(self.X)
+
+        for img in os.listdir(dir):
+        # ladda bilden i variablen <pic> om möjligt. annars skippa
+            try:
+                pic = Image.open(f'{dir}/{img}').convert('L')
+            except:
+                #some other way to handle this ? ?store unloaded images?
+                print(f'couldnt load image: {img}')
+                continue
+
+            # ändra till angiven storlek
+            pic = pic.resize((self.image_size, self.image_size), Image.ANTIALIAS)
+            # gör pixeldatan till 1-dimensionell
+            arr = np.asarray(pic).flatten()
+
+            # fyll på i globala variablerna X och y
+            self.X.append(arr)
+            self.y.append(label)
+            
+        return len(self.X) - len_before
 
 # funktion för att ladda bilderna från datasetkällan till variablerna X och y
-def load_category(category):
-    # directory där kategorins bilder finns
-    dir = os.path.join(DATASET_DIR, category)
+# def load_category(category):
+#     # directory där kategorins bilder finns
+#     dir = os.path.join(DATASET_DIR, category)
 
-    # för varje bild med angiven kategori
-    for img in os.listdir(dir):
-        # ladda bilden i variablen <pic> om möjligt. annars skippa
-        try:
-            pic = Image.open(f'{dir}/{img}').convert('L')
-        except:
-            print(f'{img} not found')
-            continue
+#     # för varje bild med angiven kategori
+#     for img in os.listdir(dir):
+#         # ladda bilden i variablen <pic> om möjligt. annars skippa
+#         try:
+#             pic = Image.open(f'{dir}/{img}').convert('L')
+#         except:
+#             print(f'{img} not found')
+#             continue
 
-        # ändra till angiven storlek
-        pic = pic.resize((BASE_SIZE, BASE_SIZE), Image.ANTIALIAS)
-        # gör pixeldatan till 1-dimensionell
-        arr = np.asarray(pic).flatten()
+#         # ändra till angiven storlek
+#         pic = pic.resize((BASE_SIZE, BASE_SIZE), Image.ANTIALIAS)
+#         # gör pixeldatan till 1-dimensionell
+#         arr = np.asarray(pic).flatten()
 
-        # fyll på i globala variablerna X och y
-        X.append(arr)
-        y.append(category)
+#         # fyll på i globala variablerna X och y
+#         X.append(arr)
+#         y.append(category)
 
-# globala variabler X för data, y för labels
-X = []
-y = []
+# # globala variabler X för data, y för labels
+# X = []
+# y = []
 
 if __name__=='__main__':
-
+    pass
     # laddar data från följande kategorier
-    load_category('happiness')
-    load_category('sadness')
+    # load_category('happiness')
+    # load_category('sadness')
 
     # skapar en estimator. (Denna kan bytas ut till andra algoritmer)
     clf = KNeighborsClassifier(n_neighbors=3)
@@ -64,3 +174,22 @@ if __name__=='__main__':
     # printar ut lite statistik
     print(f'predictions: {len(pred)}. dataset size: {len(X)}')
     print(f'{int((res/len(y_test)) * 100)}%')
+
+
+    ##############################
+    X = []
+    y = []
+
+    # load_category('test')
+    print('predicting custom ')
+    pred = clf.predict(X)
+
+    # antalet korrekta predictions lagras i variablen res
+    res = len([True for i in pred if i == 'happiness'])
+
+    print(pred)
+
+    # printar ut lite statistik
+    print(f'predictions: {len(pred)}. correct: {res}')
+    print(f'{int((res/len(y)) * 100)}%')
+
