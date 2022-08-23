@@ -43,7 +43,8 @@ if __name__=='__main__':
 
     # laddar data från följande kategorier
     load_category('happiness')
-    load_category('sadness')
+    #load_category('sadness')
+    load_category('neutrality')
 
     # skapar en estimator. (Denna kan bytas ut till andra algoritmer)
     clf = KNeighborsClassifier(n_neighbors=3)
@@ -64,3 +65,27 @@ if __name__=='__main__':
     # printar ut lite statistik
     print(f'predictions: {len(pred)}. dataset size: {len(X)}')
     print(f'{int((res/len(y_test)) * 100)}%')
+
+
+
+
+    # print the confusion matrix and slice it into four pieces
+    from sklearn.metrics import confusion_matrix
+    cm = confusion_matrix( y_test, pred)
+
+    print('Confusion matrix\n\n', cm)
+    print('\nTrue Positives (TP) = ', cm[0,0] )
+    print('\nTrue Negatives (TN) = ', cm[1,1] )
+    print('\nFalse Positives (FP) = ', cm[0,1] )
+    print('\nFalse Negatives (TP) = ', cm[1,0] )
+
+    TP = cm[0,0]
+    TN = cm[1,1]
+    FP = cm[0,1]
+    FN = cm[1,0]
+
+    # print classification accuracy
+
+    classification_accuracy = (TP + TN) / float(TP + TN + FP + FN)
+
+    print('Classification accuracy : {0:0.4f}'.format(classification_accuracy))
