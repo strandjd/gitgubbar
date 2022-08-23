@@ -25,9 +25,7 @@ class EmotionDetector():
         self.image_size = DEFAULT_IMAGE_SIZE
         self.estimator = None
 
-    # shuffle=True good kwargs
     def fit_train_test(self, test_size=DEFAULT_TEST_SIZE, kwargs:dict={}):
-        #behöver vi spara alla dessta xy i objektet??
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
             self.X, self.y, test_size=test_size, **kwargs)
         
@@ -59,11 +57,6 @@ class EmotionDetector():
         # res['percentage'] = (round(res['predictions'] / res['expected'])) * 100
         # return res
         # return self.estimator.predict(X)
-
-  
-    # print('fitting')
-    # clf.fit(X, y)
-    
 
     def set_estimator(self, name:str, kwargs:dict={}) -> bool:
         """Sets estimator with name <name>. 

@@ -1,7 +1,6 @@
 passa modell inkrementellt istället för allt på en gång 
 https://scikit-learn.org/0.15/modules/scaling_strategies.html
 
-
 warm_start, partial_fit
 https://datascience.stackexchange.com/questions/68599/incremental-learning-with-sklearn-warm-start-partial-fit-fit
 

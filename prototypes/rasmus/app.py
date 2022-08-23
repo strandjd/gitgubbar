@@ -33,13 +33,35 @@ def example():
 
     print(f"loaded {model.load_category('happiness', get_dir('happiness'))} images")
     print(f"loaded {model.load_category('sadness', get_dir('sadness'))} images")
-    # print(f"loaded {model.load_category('neutrality', get_dir('neutrality'))} images")
+    print(f"loaded {model.load_category('neutrality', get_dir('neutrality'))} images")
 
     model.fit_train_test(kwargs={'shuffle':True})
     res = model.predict_test_data()
 
     print(res['percentage'])
 
+
+def try_all_classifiers():
+
+    print(get_all_estimator_names(type='classifier'))
+
+    for name in get_all_estimator_names(type='classifier'):
+        print('hej')
+        print(f"{name} -- ")
+        model = EmotionDetector()
+        model.set_estimator(name)
+
+        model.load_category('happiness', get_dir('happiness'))
+        model.load_category('sadness', get_dir('sadness'))
+        # model.load_category('neutrality', get_dir('neutrality'))
+
+        model.fit_train_test(kwargs={'shuffle':True})
+        res = model.predict_test_data()
+
+        print(res['percentage'])
+
+
+# try_all_classifiers()
 example()
 
 # kwargs = {'n_neighbors': 1}
