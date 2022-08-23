@@ -1,0 +1,14 @@
+Webcrawler --> croppa av ansikten --> validera(Är detta ett ansikte) 
+--> Assign emotion(Vilken känsla visar ansiktet? hur stark är känslan) 
+--> Ladda upp filen i databas
+
+databastabell
+    image BLOB,
+    source_url TEXT,
+    emotion ENUM(INT?)
+
+
+flow2 -- aiträning
+ladda nya bilder från databas --> fit de nya bilderna -->
+jämför om någon förbättring --> spara eller släng den nya modellen -->
+(*markera använda bilder på något vis) 
