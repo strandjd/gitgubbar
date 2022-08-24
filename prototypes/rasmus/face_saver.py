@@ -27,10 +27,15 @@ def transform_faces(dirin, dirout):
 if __name__=='__main__':
     import glob
 
-    if not os.path.isdir('res'):
-        os.mkdir('res')
-    
-    for f in glob.glob('res/*'):
-        os.remove(f)
+    res_dir = os.path.join(
+        os.path.abspath(os.path.join(os.path.dirname(__file__),"res")))
 
-    print(save_faces('human.jpg', 'res'))
+    src = os.path.abspath(os.path.join(os.path.dirname(__file__),"happy-people.jpg"))
+
+    if not os.path.isdir(res_dir):
+        os.mkdir(res_dir)
+    
+    # for f in glob.glob(f'{res_dir}*'):
+        # os.remove(f)
+
+    print(save_faces(src, res_dir))
