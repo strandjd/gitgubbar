@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 import os, sklearn
 
 
-DEFAULT_IMAGE_SIZE = 224
+DEFAULT_IMAGE_SIZE = 48 #224
 DEFAULT_TEST_SIZE = 0.25
 
 def get_all_estimator_names(type:str=None):

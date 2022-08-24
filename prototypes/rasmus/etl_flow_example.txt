@@ -7,7 +7,6 @@ databastabell
     source_url TEXT,
     emotion ENUM(INT?)
 
-
 flow2 -- aiträning
 ladda nya bilder från databas --> fit de nya bilderna -->
 jämför om någon förbättring --> spara eller släng den nya modellen -->
