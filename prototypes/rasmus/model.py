@@ -3,7 +3,6 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 import os, sklearn
 
-
 DEFAULT_IMAGE_SIZE = 48 #224
 DEFAULT_TEST_SIZE = 0.25
 
@@ -44,21 +43,12 @@ class EmotionDetector():
         correct = len([True for i,j in zip(res['predictions'], res['expected']) if i == j])
         res['percentage'] = ( round(correct / len(res['expected']), 2) ) * 100
         return res
-
-
     # these need to be preprocessed
     def predict(self, X, y):
         raise Exception('TODO')
-        # """returns a dictionary with three keys: predictions, expected, percentage"""
-        # res = {
-        #     'predictions': self.estimator.predict(self.X),
-        #     'expected'   : self.y
-        # }
-        # res['percentage'] = (round(res['predictions'] / res['expected'])) * 100
-        # return res
-        # return self.estimator.predict(X)
 
     def set_estimator(self, name:str, kwargs:dict={}) -> bool:
+
         """Sets estimator with name <name>. 
         <kwargs> = dict with keyword arguments for selected estimator.
         Estimator names can be found by calling <get_all_estimator_names>"""
@@ -83,9 +73,6 @@ class EmotionDetector():
         self.estimator = est_class(**kwargs)
 
         return True
-
-    
-
     def load_category(self, label:str, dir:str) -> int:
         """loads all images in directory <dir> as label <label>.
         returns amount of loaded images as int."""
