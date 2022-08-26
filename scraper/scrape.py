@@ -13,6 +13,15 @@ GOOGLE_QUERY_URL = 'https://www.google.se/search?q='
 RANDOM_WORD_API_URL = 'https://random-word-api.herokuapp.com/word'
 BACKUP_BASE_URLS = ['https://en.wikipedia.org/wiki/List_of_blogs']#['https://www.pexels.com/search/face/','https://www.thetimes.co.uk/', 'https://www.hd.se/sverige', 'https://en.wikipedia.org/wiki/Main_Page']
 
+def construct_url(src, url):
+    if url[8:] != 'https://':
+        if url[:2] == '//':
+            return 'https:' + url
+        elif url[0] == '/':
+            return src[:(-1 if src[-1] == '/' else len(src))]  + url
+        else:
+            return 'https://' + url
+    return url
 
 class Scraper():
     def __init__(self):
@@ -38,7 +47,7 @@ class Scraper():
         fp.close()
 
         fp = open(SCRAPED_IMAGES_FILE, 'r')
-        self.scraped_images = json.load(fp)
+        self.scraped_images = set(json.load(fp))
         fp.close()
 
         fp = open(TO_EXPLORE_FILE, 'r')
@@ -56,27 +65,13 @@ class Scraper():
 
         for i, image in enumerate(self.scraped_images):
             try:
-                #construct valid url
-                url = image['image_url']
-                src = image['source']
-
-                if url[8:] != 'https://':
-                    if url[:2] == '//':
-                        url = 'https:' + url
-                    elif url[0] == '/':
-                        url = src[:-1] + url
-                    else:####################TA BORT
-                        url = 'https://' + url
-                        # print(f'FEELL. url: {url}, source: {src}, first 8: {url[8:]}')
+                url = construct_url(image['source'], image['image_url'])
                 if verbose: print('RESULT URL : ', url, '\n')
-                # if image has https:// is good
-                # if image has // needs https: prefix
-                # if image has / needs source + url
             
                 img_data = requests.get(url).content
                 with open(os.path.join(dirout, f"{i}.{url[-3:]}"), 'wb') as fp:
                     fp.write(img_data)
-                if verbose: print(f'{image["image_url"]} saved as {i}.jpg')
+                if verbose: print(f'{url} saved as {i}.jpg')
             except Exception as e:
                 if verbose: print(e)
                 continue
@@ -131,41 +126,19 @@ class Scraper():
 
         for item in images:
             try:
-                image_url = item['src']
+                # image_url = item['src']
+                if item['src'][-4:] in ['.jpg', '.png']:
+                    self.scraped_images.add(construct_url(url, item['src']))
             except:
                 continue
-
-            if len(self.scraped_images) > 0:
-                if image_url in [x['image_url'] for x in self.scraped_images]:
-                    continue
-            if image_url[-4:] in ['.jpg', '.png']:
-                self.scraped_images.append({ 'image_url' : image_url, 'source' : url, 'timestamp' : time.time() })
+            
+            
+            # if len(self.scraped_images) > 0:
+            #     if image_url in [x['image_url'] for x in self.scraped_images]:
+            #         continue
+            # if image_url[-4:] in ['.jpg', '.png']:
+            #     self.scraped_images.append({ 'image_url' : image_url, 'source' : url, 'timestamp' : time.time() })
 
         for item in urls:
             if item['href'] not in self.explored_urls:
-                self.to_explore.add(item['href'])
-
-
-
-# import shutil
-
-# pics_dir = os.path.join(SCRAPER_DIR, 'pics')
-
-# for p in [SCRAPED_IMAGES_FILE, EXPLORED_URLS_FILE, TO_EXPLORE_FILE]:
-#     try:
-#         os.remove(p)
-#     except Exception as e:
-#         print(e)
-#         pass # ;)
-# shutil.rmtree(pics_dir)
-
-# os.mkdir(pics_dir)
-# s = Scraper()
-
-# for i in range(20):
-#     s.run()
-#     s.save()
-
-# print(f'explored: {len(s.explored_urls)}, images found: {len(s.scraped_images)}, saved urls: {len(s.to_explore)}')
-
-# s.download_scraped_images(pics_dir)
+                self.to_explore.add(construct_url(url, item['href']))
