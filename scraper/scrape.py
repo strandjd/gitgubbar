@@ -11,14 +11,20 @@ TO_EXPLORE_FILE     = os.path.join(SCRAPER_DIR, 'to_explore.json')
 
 GOOGLE_QUERY_URL = 'https://www.google.se/search?q='
 RANDOM_WORD_API_URL = 'https://random-word-api.herokuapp.com/word'
-BACKUP_BASE_URLS = ['https://en.wikipedia.org/wiki/List_of_blogs']#['https://www.pexels.com/search/face/','https://www.thetimes.co.uk/', 'https://www.hd.se/sverige', 'https://en.wikipedia.org/wiki/Main_Page']
+BACKUP_BASE_URLS = ['https://www.pexels.com/search/face/','https://www.hd.se/sverige', 'https://en.wikipedia.org/wiki/Main_Page']
+# 'https://www.thetimes.co.uk/', 
+#['https://en.wikipedia.org/wiki/List_of_blogs']
 
+
+
+#creates invalid urls. especially for normal urls which results in bad connections
 def construct_url(src, url):
     if url[8:] != 'https://':
         if url[:2] == '//':
             return 'https:' + url
         elif url[0] == '/':
-            return src[:(-1 if src[-1] == '/' else len(src))]  + url
+            src_split = src.split('/')
+            return src_split[0] + '//' + src_split[2] + url
         else:
             return 'https://' + url
     return url
@@ -65,13 +71,13 @@ class Scraper():
 
         for i, image in enumerate(self.scraped_images):
             try:
-                url = construct_url(image['source'], image['image_url'])
-                if verbose: print('RESULT URL : ', url, '\n')
+                # url = construct_url(image['source'], image['image_url'])
+                if verbose: print('RESULT URL : ', image, '\n')
             
-                img_data = requests.get(url).content
-                with open(os.path.join(dirout, f"{i}.{url[-3:]}"), 'wb') as fp:
+                img_data = requests.get(image).content
+                with open(os.path.join(dirout, f"{i}.{image[-3:]}"), 'wb') as fp:
                     fp.write(img_data)
-                if verbose: print(f'{url} saved as {i}.jpg')
+                if verbose: print(f'{image} saved as {i}.jpg')
             except Exception as e:
                 if verbose: print(e)
                 continue
@@ -126,19 +132,14 @@ class Scraper():
 
         for item in images:
             try:
-                # image_url = item['src']
                 if item['src'][-4:] in ['.jpg', '.png']:
                     self.scraped_images.add(construct_url(url, item['src']))
             except:
                 continue
             
-            
-            # if len(self.scraped_images) > 0:
-            #     if image_url in [x['image_url'] for x in self.scraped_images]:
-            #         continue
-            # if image_url[-4:] in ['.jpg', '.png']:
-            #     self.scraped_images.append({ 'image_url' : image_url, 'source' : url, 'timestamp' : time.time() })
-
         for item in urls:
-            if item['href'] not in self.explored_urls:
-                self.to_explore.add(construct_url(url, item['href']))
+            try:
+                if item['href'] not in self.explored_urls:
+                    self.to_explore.add(construct_url(url, item['href']))
+            except:
+                continue
