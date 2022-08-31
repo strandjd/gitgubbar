@@ -1,0 +1,11 @@
+beautifulsoup4==4.11.1
+fer==22.4.0
+google==3.0.0
+matplotlib==3.5.2
+numpy==1.22.4
+opencv_python==4.6.0.66
+Pillow==9.2.0
+psutil==5.8.0
+requests==2.25.1
+scikit_learn==1.1.2
+silence_tensorflow==1.2.1
