@@ -9,40 +9,6 @@ RES_DIR = os.path.join(CURR_DIR, 'results')
 IMAGES_TO_SCRAPE = 2000
 
 if __name__=="__main__":
-    
-    s = Scraper()
-    faces = len(os.listdir(f'{CURR_DIR}/cropped_faces'))
-    tmp = len(os.listdir(f'{CURR_DIR}/tmp'))
-    explored = len(s.explored_urls)
-    unexplored = len(s.to_explore)
-
-    # import requests
-    # ims = []
-    # for image in s.scraped_images:
-    #     # ims.append(cv2.imread(f'{CURR_DIR}/tmp/{image}'))
-    #     ims.append(requests.get(image).content)
-    # print(len(ims))
-
-
-    x = ['explored_urls','downloaded_images', 'cropped faces']
-    y = [explored, tmp, faces]
-    fig, ax = plt.subplots()
-    # fig, ax = plt.figure()
-    bars = ax.bar(x, y)
-    ax.bar_label(bars)
-    ax.set_xlabel(f'unexplored urls: {unexplored}')
-
-    # for bars in ax:
-    #     ax.bar_label(bars)
-
-    
-    # bar_label(['image_urls', 'successfully_downloaded_images', 'cropped faces'])
-    # for i, txt in enumerate():
-    #     ax.annotate(txt, (x[i], y[i]))
-
-    plt.show()
-
-    sys.exit(0)
 
     s = Scraper()
     s.random_search = True
