@@ -10,12 +10,8 @@ import os
 
 CURR_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 
-# input_image = cv2.imread(r"C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_angry.jpg")
-# input_image = cv2.imread(r"C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_neutral.jpg")
-# input_image = cv2.imread(r"C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_sad.jpg")
-
 # lägg in bild här
-input_image = cv2.imread(r"C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_neutral.jpg")
+input_image = cv2.imread(r"C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_angry.jpg")
 
 emotion_detector = FER()
 #emotion_detector = FER(mtcnn=True)
