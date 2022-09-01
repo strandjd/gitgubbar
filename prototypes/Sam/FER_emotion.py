@@ -10,7 +10,14 @@ import os
 
 CURR_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 
-input_image = cv2.imread("your pic")
+# "C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_happy.jpg"
+# "C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_neutral.jpg"
+# "C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_sad.jpg"
+
+# input_image = cv2.imread(r"C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_angry.jpg")
+# input_image = cv2.imread(r"C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_neutral.jpg")
+# input_image = cv2.imread(r"C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_sad.jpg")
+input_image = cv2.imread(r"C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_happy.jpg")
 
 emotion_detector = FER()
 #emotion_detector = FER(mtcnn=True)
@@ -29,7 +36,7 @@ emotions = result[0]["emotions"]
 cv2.rectangle(input_image,(
   bounding_box[0], bounding_box[1]),(
   bounding_box[0] + bounding_box[2], bounding_box[1] + bounding_box[3]),
-              (0, 155, 255), 2)
+              (255, 0, 0), 2)
 
 
 # Now we will add Score to Bounding Box by using the following code:
@@ -38,7 +45,7 @@ cv2.rectangle(input_image,(
 
 emotion_name, score = emotion_detector.top_emotion(input_image)
 for index, (emotion_name, score) in enumerate(emotions.items()):
-   color = (211, 211,211) if score < 0.01 else (255, 10, 10)
+   color = (0, 255,0) #if score < 0.01 else (255, 10, 10)
    emotion_score = "{}: {}".format(emotion_name, "{:.2f}".format(score))
    org = (50, 50)
    cv2.putText(input_image,emotion_score,
