@@ -37,3 +37,4 @@ train_X = train_X.reshape(train_X.shape[0], 48,48)
 
 print('Training data shape : ', train_X.shape, train_Y.shape) 
 print('Testing data shape : ', test_X.shape, test_Y.shape)
+

@@ -10,13 +10,11 @@ import os
 
 CURR_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 
-# "C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_happy.jpg"
-# "C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_neutral.jpg"
-# "C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_sad.jpg"
-
 # input_image = cv2.imread(r"C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_angry.jpg")
 # input_image = cv2.imread(r"C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_neutral.jpg")
 # input_image = cv2.imread(r"C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_sad.jpg")
+
+# lägg in bild här
 input_image = cv2.imread(r"C:\Users\hajt\Desktop\gitgubbar\prototypes\Sam\rj_happy.jpg")
 
 emotion_detector = FER()
@@ -40,6 +38,7 @@ cv2.rectangle(input_image,(
 
 
 # Now we will add Score to Bounding Box by using the following code:
+
 
 
 
